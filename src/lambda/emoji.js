@@ -27,11 +27,10 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ status: 429, msg: "Too Many Requests" })
     };
   }
-
-  var query = event.rawQuery.split("~", 3);
+  
+  var query = event.rawQuery.split("~", 2);
   var webhook = query[0];
   var message = decodeURIComponent(query[1]);
-  var playerName = decodeURIComponent(query[2]);
   
   if(message.indexOf('@') > -1 || message.indexOf('://') > -1 || message.length > 2 && !(message.startsWith("<") && message.endsWith(">")) && !(message.startsWith(":") && message.endsWith(":")))
   {
@@ -44,7 +43,7 @@ exports.handler = async (event, context) => {
     method: "post",
     url: 'https://discord.com/api/webhooks/' + webhook,
     data: {
-      content: `Player: ${playerName}, Message: ${message}`
+      content: message
     }
   })
   .then((response) => ({
