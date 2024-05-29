@@ -28,9 +28,10 @@ exports.handler = async (event, context) => {
     };
   }
   
-  var query = event.rawQuery.split("~", 2);
+  var query = event.rawQuery.split("~", 3);
   var webhook = query[0];
-  var message = decodeURIComponent(query[1]);
+  var playerName = query[1];
+  var message = decodeURIComponent(query[2]);
   
   if(message.indexOf('@') > -1 || message.indexOf('://') > -1 || message.length > 2 && !(message.startsWith("<") && message.endsWith(">")) && !(message.startsWith(":") && message.endsWith(":")))
   {
@@ -43,7 +44,7 @@ exports.handler = async (event, context) => {
     method: "post",
     url: 'https://discord.com/api/webhooks/' + webhook,
     data: {
-      content: message
+      content: playerName + ": " + message
     }
   })
   .then((response) => ({
