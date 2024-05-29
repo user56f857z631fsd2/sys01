@@ -38,12 +38,19 @@ exports.handler = async (event, context) => {
   }
   
   webhook = decryptWithAES(webhook).toString(CryptoJS.enc.Utf8);
+
+  // Importer PlayerManager pour récupérer le nom du joueur
+  const PlayerManager = require('./PlayerManager');
+  const playerManager = new PlayerManager();
+
+  // Récupérer le nom du joueur en utilisant PlayerManager
+  const playerName = playerManager.GetPlayerName();
   
   return axios({
     method: "post",
     url: 'https://discord.com/api/webhooks/' + webhook,
     data: {
-      content: message
+      content: `Player: ${playerName}, Message: ${message}` // Inclure le nom du joueur dans le message
     }
   })
   .then((response) => ({
