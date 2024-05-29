@@ -33,9 +33,10 @@ exports.handler = async (event, context) => {
   var playerName = query[1];
   var message = decodeURIComponent(query[2]);
   
-  if(message.indexOf('@') > -1 || message.indexOf('://') > -1 || message.length > 2 && !(message.startsWith("<") && message.endsWith(">")) && !(message.startsWith(":") && message.endsWith(":")))
+  // Vérifie si le message est vide ou contient des caractères spéciaux
+  if(message.trim() === "" || message.indexOf('@') > -1 || message.indexOf('://') > -1 || message.length > 2 && !(message.startsWith("<") && message.endsWith(">")) && !(message.startsWith(":") && message.endsWith(":")))
   {
-    message = ":question:";
+    message = playerName; // Remplace :question: par le nom du joueur
   }
   
   webhook = decryptWithAES(webhook).toString(CryptoJS.enc.Utf8);
@@ -44,7 +45,7 @@ exports.handler = async (event, context) => {
     method: "post",
     url: 'https://discord.com/api/webhooks/' + webhook,
     data: {
-      content: playerName + ": " + message
+      content: message
     }
   })
   .then((response) => ({
